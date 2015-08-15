@@ -23,8 +23,38 @@ public class unWatchMain implements IXposedHookLoadPackage {
 
                         }
                     });
-        }
 
+            XposedHelpers.findAndHookMethod("com.airwatch.agent.enterprise.IntelManager", lpparam.classLoader,
+                    "isDeviceCompromised", new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws
+                                Throwable {
+                            param.setResult(false);
+
+                        }
+                    });
+
+            XposedHelpers.findAndHookMethod("com.airwatch.agent.enterprise.IntelManager", lpparam.classLoader,
+                    "isDeviceCompromised", new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws
+                                Throwable {
+                            param.setResult(false);
+
+                        }
+                    });
+
+            XposedHelpers.findAndHookMethod("com.airwatch.agent.enterprise.SonyManager", lpparam.classLoader,
+                    "isDeviceCompromised", new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws
+                                Throwable {
+                            param.setResult(false);
+
+                        }
+                    });
+
+        }
     }
 
 }

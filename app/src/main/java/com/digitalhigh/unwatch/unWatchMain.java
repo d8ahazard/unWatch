@@ -88,19 +88,35 @@ public class unWatchMain implements IXposedHookLoadPackage {
             }
 
         } else if (lpparam.packageName.equals("com.airwatch.email")) {
+            XposedBridge.log("unWatch: Hooking Email");
             XposedHelpers.findAndHookMethod("com.airwatch.sdk.SDKManager", lpparam.classLoader,
                     "isCompromised", new XC_MethodHook() {
                         @Override
 
-                        protected void afterHookedMethod(MethodHookParam param) throws
+                        protected void beforeHookedMethod(MethodHookParam param) throws
                                 Throwable {
-                            XposedBridge.log("unWatch: Hooking Email");
+                            XposedBridge.log("unWatch: Telling email to shut up.");
 
                             param.setResult(false);
 
 
                         }
                     });
+        }else if (lpparam.packageName.contains("com.airwatch")) {
+            XposedBridge.log("unWatch: Forcing universal hook");
+            try {
+                XposedBridge.hookAllMethods(Boolean.class, "isCompromised", new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws
+                            Throwable {
+                        XposedBridge.log("unWatch: This should be fun.");
+
+                        param.setResult(false);
+                    }
+                });
+            } catch (Throwable e) {
+                XposedBridge.log("unWatch: error " + e);
+            }
         }
     }
 

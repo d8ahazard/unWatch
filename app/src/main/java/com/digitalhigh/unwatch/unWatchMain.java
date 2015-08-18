@@ -17,7 +17,7 @@ public class unWatchMain implements IXposedHookLoadPackage {
 
     }
     @Override
-    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+    public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         if (lpparam.packageName.equals("com.airwatch.androidagent")) {
             XposedBridge.log("unWatch: Hooking application");
             XposedHelpers.findAndHookMethod("com.airwatch.agent.enterprise.d", lpparam.classLoader,
@@ -27,11 +27,12 @@ public class unWatchMain implements IXposedHookLoadPackage {
 
                         protected void beforeHookedMethod(MethodHookParam param) throws
                                 Throwable {
-                            XposedBridge.log("unWatch: Hooking agent.enterprise.d");
+                            Log.d("unWatch: ", "Hooking agent.enterprise.d");
                             param.setResult(false);
 
                         }
                     });
+
 
             XposedHelpers.findAndHookMethod("com.airwatch.agent.enterprise.IntelManager", lpparam.classLoader,
                     "isDeviceCompromised", new XC_MethodHook() {
@@ -39,7 +40,7 @@ public class unWatchMain implements IXposedHookLoadPackage {
 
                         protected void beforeHookedMethod(MethodHookParam param) throws
                                 Throwable {
-                            XposedBridge.log("unWatch: Hooking IntelManager");
+                            Log.d("unWatch: ", "Hooking IntelManager");
                             param.setResult(false);
 
                         }
@@ -52,7 +53,7 @@ public class unWatchMain implements IXposedHookLoadPackage {
 
                         protected void beforeHookedMethod(MethodHookParam param) throws
                                 Throwable {
-                            XposedBridge.log("unWatch: Hooking SonyManager");
+                            Log.d("unWatch: ", "Hooking SonyManager");
                             param.setResult(false);
 
                         }
@@ -64,8 +65,20 @@ public class unWatchMain implements IXposedHookLoadPackage {
 
                         protected void beforeHookedMethod(MethodHookParam param) throws
                                 Throwable {
-                            XposedBridge.log("unWatch: Hooking AWD");
+                            Log.d("unWatch: ", "Hooking AWD");
                             param.setResult(false);
+
+                        }
+                    });
+
+            XposedHelpers.findAndHookMethod("com.airwatch.core.AirWatchDevice", lpparam.classLoader,
+                    "c", new XC_MethodHook() {
+                        @Override
+
+                        protected void beforeHookedMethod(MethodHookParam param) throws
+                                Throwable {
+                            Log.d("unWatch: ", "Hooking Sense check");
+                            param.setResult("");
 
                         }
                     });
@@ -78,8 +91,7 @@ public class unWatchMain implements IXposedHookLoadPackage {
                                     Throwable {
                                 JSONObject jo = (JSONObject) param.args[0];
                                 jo.put("IsCompromised", "false");
-                                XposedBridge.log("unWatch: Hooking JSON");
-                                return;
+                                Log.d("unWatch: ", "Hooking JSON");
 
                             }
                         });
@@ -95,29 +107,39 @@ public class unWatchMain implements IXposedHookLoadPackage {
 
                         protected void beforeHookedMethod(MethodHookParam param) throws
                                 Throwable {
-                            XposedBridge.log("unWatch: Telling email to shut up.");
+
 
                             param.setResult(false);
 
 
                         }
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            Log.d("unWatch: ", "Telling email to shut up.");
+                        }
                     });
-        }else if (lpparam.packageName.contains("com.airwatch")) {
+
+        } else if (lpparam.packageName.contains("com.airwatch")) {
             XposedBridge.log("unWatch: Forcing universal hook");
             try {
                 XposedBridge.hookAllMethods(Boolean.class, "isCompromised", new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws
                             Throwable {
-                        XposedBridge.log("unWatch: This should be fun.");
+
 
                         param.setResult(false);
                     }
+
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        Log.d("unWatch: ","hooked universal method in package " + lpparam.packageName + " and class " + lpparam.getClass());
+                    }
                 });
+
             } catch (Throwable e) {
                 XposedBridge.log("unWatch: error " + e);
             }
-        }
-    }
 
+        }
+
+    }
 }

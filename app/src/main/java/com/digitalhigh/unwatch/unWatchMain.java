@@ -82,6 +82,17 @@ public class unWatchMain implements IXposedHookLoadPackage {
 
                         }
                     });
+            XposedHelpers.findAndHookMethod("com.airwatch.core.AirWatchDevice", lpparam.classLoader,
+                    "AirWatchEnum.OemId d", new XC_MethodHook() {
+                        @Override
+
+                        protected void beforeHookedMethod(MethodHookParam param) throws
+                                Throwable {
+                            Log.d("unWatch: ", "Hooking Sense check 2");
+                            param.setResult("AirWatchEnum.OemId.a");
+
+                        }
+                    });
             try {
                 XposedHelpers.findAndHookMethod("com.airwatch.agent.b.a", lpparam.classLoader,
                         "f", JSONObject.class, new XC_MethodHook() {
@@ -131,7 +142,7 @@ public class unWatchMain implements IXposedHookLoadPackage {
                     }
 
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        Log.d("unWatch: ","hooked universal method in package " + lpparam.packageName + " and class " + lpparam.getClass());
+                        Log.d("unWatch: ", "hooked universal method in package " + lpparam.packageName + " and class " + lpparam.getClass());
                     }
                 });
 

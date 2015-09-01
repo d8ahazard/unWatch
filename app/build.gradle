@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 20
     buildToolsVersion "22.0.1"
 
     defaultConfig {
         applicationId "com.digitalhigh.unwatch"
-        minSdkVersion 21
+        minSdkVersion 20
         targetSdkVersion 22
         versionCode 1
-        versionName "1.0"
+        versionName "1.1"
     }
     buildTypes {
         release {
